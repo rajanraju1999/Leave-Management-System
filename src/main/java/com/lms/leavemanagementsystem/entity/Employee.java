@@ -51,4 +51,7 @@ public class Employee {
     @Column(name = "lateComing")
     private String lateComing;
 
+    @Column(name = "number_of_leaves")
+    private int numberOfLeaves;
+
 }
