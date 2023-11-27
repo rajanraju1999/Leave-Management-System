@@ -1,10 +1,7 @@
 package com.lms.leavemanagementsystem.entity;
 
 import jakarta.annotation.Nullable;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,28 +27,39 @@ public class Employee {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "Department")
-    private String Department;
+    @Column(name = "department")
+    private String department;
 
     @Column(name = "casualLeaves")
-    private String casualLeaves;
+    private Double casualLeaves;
 
     @Column(name = "earnedLeaves")
-    private String earnedLeaves;
+    private Double earnedLeaves;
 
     @Column(name = "onDuty")
-    private String onDuty;
+    private Double onDuty;
 
     @Column(name = "permissions")
-    private String permissions;
+    private Double permissions;
 
     @Column(name = "lop")
-    private String lop;
+    private Double lop;
 
     @Column(name = "lateComing")
-    private String lateComing;
+    private Double lateComing;
 
     @Column(name = "number_of_leaves")
-    private int numberOfLeaves;
+    private Integer numberOfLeaves;
+
+    //To add default value
+    @PrePersist
+    public void prePersist() {
+        casualLeaves = (casualLeaves == null) ? 8.0 : casualLeaves;
+        earnedLeaves = (earnedLeaves == null) ? 12.0 : earnedLeaves;
+        onDuty = (onDuty == null) ? 10.0 : onDuty;
+        permissions = (permissions == null) ? 2.0 : permissions;
+        lop = (lop == null) ? 0.0 : lop;
+        lateComing = (lateComing == null) ? 0.0 : lateComing;
+    }
 
 }
