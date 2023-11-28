@@ -60,6 +60,7 @@ public class Employee {
         permissions = (permissions == null) ? 2.0 : permissions;
         lop = (lop == null) ? 0.0 : lop;
         lateComing = (lateComing == null) ? 0.0 : lateComing;
+        numberOfLeaves = (numberOfLeaves == null) ? 0: numberOfLeaves;
     }
 
 }

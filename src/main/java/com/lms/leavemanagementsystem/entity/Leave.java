@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -14,7 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 @Table(name = "Leaves")
-public class Leaves {
+public class Leave {
 
     @Id
     @Column(name = "Leave_id")
@@ -31,16 +32,16 @@ public class Leaves {
     private Long leavesApplied;
 
     @Column(name = "datePosted")
-    private Date datePosted;
+    private LocalDate datePosted;
 
     @Column(name = "startDate")
-    private Date startDate;
+    private LocalDate startDate;
 
     @Column(name = "endDate")
-    private Date endDate;
+    private LocalDate endDate;
 
     @Column(name = "shift")
-    private Date shift;
+    private LocalDate shift;
 
     @Column(name = "reason")
     private String reason;
@@ -53,13 +54,12 @@ public class Leaves {
 
     @Column(name = "leaveStatus")
     private String leaveStatus;
-
-
-    public void generateLeaveNumber() {
-        if (employee != null && employee.getEmployeeId() != null) {
-            int numberOfLeaves = employee.getNumberOfLeaves();
-            this.leaveID = "L" + employee.getEmployeeId() + "_" + (numberOfLeaves + 1);
-            employee.setNumberOfLeaves(numberOfLeaves + 1);
+    @PrePersist
+    public void generateLeaveID() {
+        if (this.employee != null && this.employee.getEmployeeId() != null) {
+            int numberOfLeaves = this.employee.getNumberOfLeaves();
+            this.leaveID = "L" + this.employee.getEmployeeId() + "_" + (numberOfLeaves + 1);
+            this.employee.setNumberOfLeaves(numberOfLeaves + 1);
         } else {
             // Handle the case where employee or emp_id is null
             // You might throw an exception, log an error, or handle it in another way based on your requirements.
