@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -50,6 +52,10 @@ public class Employee {
 
     @Column(name = "number_of_leaves")
     private Integer numberOfLeaves;
+
+    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private List<Leave> leaveList;
 
     //To add default value
     @PrePersist
