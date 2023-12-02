@@ -58,7 +58,7 @@ public class Leave {
     public void generateLeaveID() {
         if (this.employee != null && this.employee.getEmployeeId() != null) {
             int numberOfLeaves = this.employee.getNumberOfLeaves();
-            this.leaveID = "L" + this.employee.getEmployeeId() + "_" + (numberOfLeaves + 1);
+            this.leaveID = "L"+ "_" + this.employee.getEmployeeId() + "_" + (numberOfLeaves + 1);
             this.employee.setNumberOfLeaves(numberOfLeaves + 1);
         } else {
             // Handle the case where employee or emp_id is null

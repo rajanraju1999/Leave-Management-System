@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface LeaveRepository extends JpaRepository<Leave,String> {
     List<Leave> findByEmployee(Employee employee);
 
+    Leave findByleaveID(String leaveID);
 }

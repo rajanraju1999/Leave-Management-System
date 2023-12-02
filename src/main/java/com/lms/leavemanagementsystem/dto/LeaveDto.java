@@ -21,6 +21,7 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class LeaveDto {
 
+    private String leaveID;
 
     private Long employeeID;
 
@@ -38,6 +39,9 @@ public class LeaveDto {
 
 
     private String adjustments;
+
+
+    private String remarks;
 
 
 }

@@ -46,6 +46,16 @@ public class EmployeeController {
 
     }
 
+    @PutMapping("/approve/leave")
+    public ResponseEntity<?>  approveLeave(@RequestBody LeaveDto leaveDto)
+    {
+        employeeService.approveLeave(leaveDto);
+
+        return new ResponseEntity<>("", HttpStatus.OK);
+
+
+    }
+
 
 
 }

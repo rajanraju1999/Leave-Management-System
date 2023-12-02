@@ -58,7 +58,7 @@ public class Convert {
 
         LocalDate startDate = LocalDate.parse(leaveDto.getStartDate());
         LocalDate endDate = LocalDate.parse(leaveDto.getEndDate());
-        long leavesAppliedDays = Period.between(startDate,endDate).getDays();
+        long leavesAppliedDays = Period.between(startDate,endDate).getDays()+1;
 
         return Leave.builder()
                 .employee(employeeOptional.orElse(null))
