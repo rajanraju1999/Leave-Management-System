@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.lms.leavemanagementsystem.util.leavehandler.LeaveType.CL;
+import static com.lms.leavemanagementsystem.util.leavehandler.LeaveType.EL;
+
 @Service
 public class EmployeeService {
 
@@ -66,14 +69,14 @@ public class EmployeeService {
 
         Leave leave = leaveRepository.findByleaveID(leaveDto.getLeaveID());
         Long LeavesApplied =leave.getLeavesApplied();
-        String leaveType = leave.getLeaveType();
+        LeaveType leaveType = LeaveType.valueOf(leave.getLeaveType());
 
         LeaveHandler leaveHandler = lopHandler;
         switch (leaveType) {
-            case "CL" -> leaveHandler = casualLeaveHandler;
-            case "EL" -> leaveHandler = earnedLeaveHandler;
-            case "OnDuty" -> leaveHandler = onDutyHandler;
-            case "Permission" -> leaveHandler = permissionHandler;
+            case CL -> leaveHandler = casualLeaveHandler;
+            case EL -> leaveHandler = earnedLeaveHandler;
+            case OnDuty -> leaveHandler = onDutyHandler;
+            case Permission -> leaveHandler = permissionHandler;
             default -> {
             }
         }
