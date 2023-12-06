@@ -66,9 +66,8 @@ public class EmployeeService {
 
     public void approveLeave(LeaveDto leaveDto) {
 
-
         Leave leave = leaveRepository.findByleaveID(leaveDto.getLeaveID());
-        Long LeavesApplied =leave.getLeavesApplied();
+        Double LeavesApplied =leave.getLeavesApplied();
         LeaveType leaveType = LeaveType.valueOf(leave.getLeaveType());
 
         LeaveHandler leaveHandler = lopHandler;
@@ -77,8 +76,6 @@ public class EmployeeService {
             case EL -> leaveHandler = earnedLeaveHandler;
             case OnDuty -> leaveHandler = onDutyHandler;
             case Permission -> leaveHandler = permissionHandler;
-            default -> {
-            }
         }
         leaveHandler.deductLeave(leave);
 

@@ -18,6 +18,8 @@ import java.time.temporal.Temporal;
 import java.util.Date;
 import java.util.Optional;
 
+import static com.lms.leavemanagementsystem.dto.Shift.morning;
+
 @Component
 public class Convert {
 
@@ -58,8 +60,10 @@ public class Convert {
 
         LocalDate startDate = LocalDate.parse(leaveDto.getStartDate());
         LocalDate endDate = LocalDate.parse(leaveDto.getEndDate());
-        long leavesAppliedDays = Period.between(startDate,endDate).getDays()+1;
-
+        Double leavesAppliedDays = (double) (Period.between(startDate, endDate).getDays() + 1);
+        if(leaveDto.getShift() != null && leavesAppliedDays==1.0){
+            leavesAppliedDays = 0.5;
+        }
         return Leave.builder()
                 .employee(employeeOptional.orElse(null))
                 .leaveType(leaveDto.getLeaveType())

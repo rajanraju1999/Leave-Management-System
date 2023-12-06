@@ -43,5 +43,6 @@ public class LeaveDto {
 
     private String remarks;
 
+    private Shift shift;
 
 }

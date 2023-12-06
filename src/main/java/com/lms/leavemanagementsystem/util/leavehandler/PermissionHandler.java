@@ -10,16 +10,18 @@ public class PermissionHandler implements LeaveHandler  {
 
     @Autowired
     LopHandler lopHandler;
+    @Autowired
+    CasualLeaveHandler casualLeaveHandler;
     public void deductLeave(Leave leave){
 
         Employee employee = leave.getEmployee();
 
         if (employee.getPermissions() >= leave.getLeavesApplied()) {
-            employee.setEarnedLeaves(employee.getPermissions() - leave.getLeavesApplied());
+            employee.setPermissions(employee.getPermissions() - leave.getLeavesApplied());
         } else {
-            leave.setLeavesApplied((long) (leave.getLeavesApplied()-employee.getPermissions()));
-            lopHandler.deductLeave(leave);
-            employee.setEarnedLeaves(0.0);
+            leave.setLeavesApplied((leave.getLeavesApplied()-employee.getPermissions())/4);
+            casualLeaveHandler.deductLeave(leave);
+            employee.setPermissions(0.0);
         }
 
     }

@@ -17,7 +17,7 @@ public class EarnedLeaveHandler implements LeaveHandler {
         if (employee.getEarnedLeaves() >= leave.getLeavesApplied()) {
             employee.setEarnedLeaves(employee.getEarnedLeaves() - leave.getLeavesApplied());
         } else {
-            leave.setLeavesApplied((long) (leave.getLeavesApplied()-employee.getEarnedLeaves()));
+            leave.setLeavesApplied((leave.getLeavesApplied()-employee.getEarnedLeaves()));
             lopHandler.deductLeave(leave);
             employee.setEarnedLeaves(0.0);
         }

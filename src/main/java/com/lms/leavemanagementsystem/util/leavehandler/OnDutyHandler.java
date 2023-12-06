@@ -15,11 +15,11 @@ public class OnDutyHandler implements LeaveHandler  {
         Employee employee = leave.getEmployee();
 
         if (employee.getOnDuty()>= leave.getLeavesApplied()) {
-            employee.setEarnedLeaves(employee.getOnDuty() - leave.getLeavesApplied());
+            employee.setOnDuty(employee.getOnDuty() - leave.getLeavesApplied());
         } else {
-            leave.setLeavesApplied((long) (leave.getLeavesApplied()-employee.getOnDuty()));
+            leave.setLeavesApplied((leave.getLeavesApplied()-employee.getOnDuty()));
             lopHandler.deductLeave(leave);
-            employee.setEarnedLeaves(0.0);
+            employee.setOnDuty(0.0);
         }
 
     }

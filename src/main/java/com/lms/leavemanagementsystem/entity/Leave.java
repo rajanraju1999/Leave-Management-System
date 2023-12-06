@@ -29,7 +29,7 @@ public class Leave {
     private String leaveType;
 
     @Column(name = "leavesApplied")
-    private Long leavesApplied;
+    private Double leavesApplied;
 
     @Column(name = "datePosted")
     private LocalDate datePosted;
