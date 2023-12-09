@@ -57,12 +57,12 @@ public class Convert {
         LocalDate endDate = LocalDate.parse(leaveDto.getEndDate());
         Double leavesAppliedDays = (double) (Period.between(startDate, endDate).getDays() + 1);
 
-           if (leaveDto.getHalfDay() == "YES" && leavesAppliedDays != 1.0) {
+           if ("YES".equals(leaveDto.getHalfDay())  && leavesAppliedDays != 1.0) {
                throw new HalfDayLeaveException();
-           }else if(leaveDto.getHalfDay() == "YES"){
+           }else if("YES".equals(leaveDto.getHalfDay())){
                leavesAppliedDays = 0.5;
            }
-
+        System.out.println(leavesAppliedDays);
         return Leave.builder()
                 .employee(employeeOptional.orElse(null))
                 .leaveType(LeaveType.valueOf(leaveDto.getLeaveType()))

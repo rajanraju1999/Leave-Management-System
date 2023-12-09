@@ -5,6 +5,8 @@ import com.lms.leavemanagementsystem.dto.LeaveDto;
 import com.lms.leavemanagementsystem.dto.LeaveDtoApprove;
 import com.lms.leavemanagementsystem.entity.Employee;
 import com.lms.leavemanagementsystem.entity.Leave;
+import com.lms.leavemanagementsystem.exception.CustomException.EmployeeIdNotFoundException;
+import com.lms.leavemanagementsystem.exception.CustomException.LeaveIdNotFoundException;
 import com.lms.leavemanagementsystem.repository.EmployeeRepository;
 import com.lms.leavemanagementsystem.repository.LeaveRepository;
 import com.lms.leavemanagementsystem.util.Convert;
@@ -62,27 +64,42 @@ public class EmployeeService {
 
     public void applyLeave(LeaveDto leaveDto) {
 
-        leaveRepository.save(convert.convertToLeave(leaveDto));
+        if(employeeRepository.existsById(leaveDto.getEmployeeID())){
+            leaveRepository.save(convert.convertToLeave(leaveDto));
+        }
+        else{
+            throw new EmployeeIdNotFoundException();
+
+        }
     }
 
     public void approveLeave(LeaveDtoApprove leaveDtoApprove) {
 
-        Leave leave = leaveRepository.findByleaveID(leaveDtoApprove.getLeaveID());
-        Double LeavesApplied =leave.getLeavesApplied();
-        LeaveType leaveType = leave.getLeaveType();
 
-        LeaveHandler leaveHandler = lopHandler;
-        switch (leaveType) {
-            case CL -> leaveHandler = casualLeaveHandler;
-            case EL -> leaveHandler = earnedLeaveHandler;
-            case OnDuty -> leaveHandler = onDutyHandler;
-            case Permission -> leaveHandler = permissionHandler;
+        Optional<Leave> optionalLeave = Optional.ofNullable(leaveRepository.findByleaveID(leaveDtoApprove.getLeaveID()));
+
+        optionalLeave.ifPresent(leave -> {
+            Double leavesApplied = leave.getLeavesApplied();
+            LeaveType leaveType = leave.getLeaveType();
+            LeaveHandler leaveHandler = lopHandler;
+            switch (leaveType) {
+                case CL -> leaveHandler = casualLeaveHandler;
+                case EL -> leaveHandler = earnedLeaveHandler;
+                case OnDuty -> leaveHandler = onDutyHandler;
+                case Permission -> leaveHandler = permissionHandler;
+            }
+            leaveHandler.deductLeave(leave);
+
+            leave.setLeavesApplied(leavesApplied);
+            leave.setLeaveStatus("Approved");
+            leaveRepository.save(leave);
+        });
+
+// If needed, you can handle the case where the leave is not found
+        if (optionalLeave.isEmpty()) {
+           throw new LeaveIdNotFoundException();
         }
-        leaveHandler.deductLeave(leave);
 
-        leave.setLeavesApplied(LeavesApplied);
-        leave.setLeaveStatus("Approved");
-        leaveRepository.save(leave);
     }
 
 }

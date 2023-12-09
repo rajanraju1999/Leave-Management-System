@@ -1,8 +1,10 @@
 package com.lms.leavemanagementsystem.exception;
 
 import com.lms.leavemanagementsystem.dto.HalfDay;
+import com.lms.leavemanagementsystem.exception.CustomException.EmployeeIdNotFoundException;
 import com.lms.leavemanagementsystem.exception.CustomException.EnumValidationException;
 import com.lms.leavemanagementsystem.exception.CustomException.HalfDayLeaveException;
+import com.lms.leavemanagementsystem.exception.CustomException.LeaveIdNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -24,6 +26,17 @@ public class ControllerAdvisor {
         return new ResponseEntity<>("When you are applying half day leaves the start date and end date should be same ", HttpStatus.BAD_REQUEST);
     }
 
+
+    @ExceptionHandler(LeaveIdNotFoundException.class)
+    public ResponseEntity<String> LeaveIdNotFoundException(LeaveIdNotFoundException leaveIdNotFoundException) {
+        return new ResponseEntity<>("Leave Id is wrong or not found in DB", HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(EmployeeIdNotFoundException.class)
+    public ResponseEntity<String> EmployeeIdNotFoundException(EmployeeIdNotFoundException employeeIdNotFoundException) {
+        return new ResponseEntity<>("Employee Id is wrong or not found in DB", HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
