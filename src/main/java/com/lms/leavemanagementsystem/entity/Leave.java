@@ -1,5 +1,6 @@
 package com.lms.leavemanagementsystem.entity;
 
+import com.lms.leavemanagementsystem.util.leavehandler.LeaveType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +27,7 @@ public class Leave {
     private Employee employee;
 
     @Column(name = "leaveType")
-    private String leaveType;
+    private LeaveType leaveType;
 
     @Column(name = "leavesApplied")
     private Double leavesApplied;

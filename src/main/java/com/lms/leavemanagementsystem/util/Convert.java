@@ -4,21 +4,18 @@ import com.lms.leavemanagementsystem.dto.EmployeeDto;
 import com.lms.leavemanagementsystem.dto.LeaveDto;
 import com.lms.leavemanagementsystem.entity.Employee;
 import com.lms.leavemanagementsystem.entity.Leave;
+import com.lms.leavemanagementsystem.exception.CustomException.HalfDayLeaveException;
 import com.lms.leavemanagementsystem.repository.EmployeeRepository;
+import com.lms.leavemanagementsystem.util.leavehandler.LeaveType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.Temporal;
-import java.util.Date;
 import java.util.Optional;
 
-import static com.lms.leavemanagementsystem.dto.Shift.morning;
+import static com.lms.leavemanagementsystem.dto.HalfDay.YES;
+import static com.lms.leavemanagementsystem.dto.HalfDay.NO;
 
 @Component
 public class Convert {
@@ -51,8 +48,6 @@ public class Convert {
 
     }
 
-
-
     public Leave convertToLeave(LeaveDto leaveDto)
     {
         Optional<Employee> employeeOptional = employeeRepository.findById(leaveDto.getEmployeeID());
@@ -61,12 +56,16 @@ public class Convert {
         LocalDate startDate = LocalDate.parse(leaveDto.getStartDate());
         LocalDate endDate = LocalDate.parse(leaveDto.getEndDate());
         Double leavesAppliedDays = (double) (Period.between(startDate, endDate).getDays() + 1);
-        if(leaveDto.getShift() != null && leavesAppliedDays==1.0){
-            leavesAppliedDays = 0.5;
-        }
+
+           if (leaveDto.getHalfDay() == "YES" && leavesAppliedDays != 1.0) {
+               throw new HalfDayLeaveException();
+           }else if(leaveDto.getHalfDay() == "YES"){
+               leavesAppliedDays = 0.5;
+           }
+
         return Leave.builder()
                 .employee(employeeOptional.orElse(null))
-                .leaveType(leaveDto.getLeaveType())
+                .leaveType(LeaveType.valueOf(leaveDto.getLeaveType()))
                 .startDate(LocalDate.parse(leaveDto.getStartDate()))
                 .endDate(LocalDate.parse(leaveDto.getEndDate()))
                 .reason(leaveDto.getReason())
@@ -80,7 +79,7 @@ public class Convert {
 
         return LeaveDto.builder()
                 .employeeID(leave.getEmployee().getEmployeeId())
-                .leaveType(leave.getLeaveType())
+                .leaveType(leave.getLeaveType().toString())
                 .startDate(leave.getStartDate().toString())
                 .endDate(leave.getEndDate().toString())
                 .reason(leave.getReason())

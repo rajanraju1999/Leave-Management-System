@@ -2,6 +2,7 @@ package com.lms.leavemanagementsystem.service;
 
 import com.lms.leavemanagementsystem.dto.EmployeeDto;
 import com.lms.leavemanagementsystem.dto.LeaveDto;
+import com.lms.leavemanagementsystem.dto.LeaveDtoApprove;
 import com.lms.leavemanagementsystem.entity.Employee;
 import com.lms.leavemanagementsystem.entity.Leave;
 import com.lms.leavemanagementsystem.repository.EmployeeRepository;
@@ -64,11 +65,11 @@ public class EmployeeService {
         leaveRepository.save(convert.convertToLeave(leaveDto));
     }
 
-    public void approveLeave(LeaveDto leaveDto) {
+    public void approveLeave(LeaveDtoApprove leaveDtoApprove) {
 
-        Leave leave = leaveRepository.findByleaveID(leaveDto.getLeaveID());
+        Leave leave = leaveRepository.findByleaveID(leaveDtoApprove.getLeaveID());
         Double LeavesApplied =leave.getLeavesApplied();
-        LeaveType leaveType = LeaveType.valueOf(leave.getLeaveType());
+        LeaveType leaveType = leave.getLeaveType();
 
         LeaveHandler leaveHandler = lopHandler;
         switch (leaveType) {

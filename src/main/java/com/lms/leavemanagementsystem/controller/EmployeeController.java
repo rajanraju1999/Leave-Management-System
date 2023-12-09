@@ -2,7 +2,9 @@ package com.lms.leavemanagementsystem.controller;
 
 import com.lms.leavemanagementsystem.dto.EmployeeDto;
 import com.lms.leavemanagementsystem.dto.LeaveDto;
+import com.lms.leavemanagementsystem.dto.LeaveDtoApprove;
 import com.lms.leavemanagementsystem.service.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +32,7 @@ public class EmployeeController {
 
     }
     @PostMapping("/apply/leave")
-    public ResponseEntity<?> applyLeave(@RequestBody LeaveDto leaveDto)
+    public ResponseEntity<?> applyLeave(@RequestBody @Valid LeaveDto leaveDto)
     {
         employeeService.applyLeave(leaveDto);
         return new ResponseEntity<>("", HttpStatus.OK);
@@ -47,9 +49,9 @@ public class EmployeeController {
     }
 
     @PutMapping("/approve/leave")
-    public ResponseEntity<?>  approveLeave(@RequestBody LeaveDto leaveDto)
+    public ResponseEntity<?>  approveLeave(@RequestBody @Valid LeaveDtoApprove leaveDtoApprove)
     {
-        employeeService.approveLeave(leaveDto);
+        employeeService.approveLeave(leaveDtoApprove);
 
         return new ResponseEntity<>("", HttpStatus.OK);
 
