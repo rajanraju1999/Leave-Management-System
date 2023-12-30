@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,5 +30,7 @@ public class EmployeeDto {
 
 
     private String department;
+
+    private List<RoleDto> roles;  // Add roles field
 
 }

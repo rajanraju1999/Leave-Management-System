@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,7 @@ public class EmployeeController {
 
 
     @PostMapping("/apply/leave")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<String> applyLeave(@RequestBody @Valid LeaveDto leaveDto)
     {
 
@@ -32,6 +34,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/get/leave/{id}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<List<LeaveDto>> getLeavesByID(@PathVariable Long id)
     {
 

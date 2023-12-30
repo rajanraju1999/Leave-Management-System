@@ -5,6 +5,7 @@ import com.lms.leavemanagementsystem.dto.LeaveDto;
 import com.lms.leavemanagementsystem.dto.LeaveDtoApprove;
 import com.lms.leavemanagementsystem.entity.Employee;
 import com.lms.leavemanagementsystem.entity.Leave;
+import com.lms.leavemanagementsystem.entity.Roles;
 import com.lms.leavemanagementsystem.exception.CustomException.EmployeeIdNotFoundException;
 import com.lms.leavemanagementsystem.exception.CustomException.LeaveApprovedException;
 import com.lms.leavemanagementsystem.exception.CustomException.LeaveIdNotFoundException;
