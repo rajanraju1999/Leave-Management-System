@@ -7,6 +7,7 @@ import com.lms.leavemanagementsystem.entity.Leave;
 import com.lms.leavemanagementsystem.exception.CustomException.HalfDayLeaveException;
 import com.lms.leavemanagementsystem.repository.EmployeeRepository;
 import com.lms.leavemanagementsystem.util.leavehandler.LeaveType;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,29 +24,31 @@ public class Convert {
     @Autowired
     EmployeeRepository employeeRepository;
 
+    @Autowired
+    ModelMapper modelMapper;
+
+
     public Employee convertToEmployee(EmployeeDto employeeDto){
 
-       return Employee.builder()
+       /* return Employee.builder()
                 .employeeId(employeeDto.getEmployeeId())
                 .employeeName(employeeDto.getEmployeeName())
                 .email(employeeDto.getEmail())
                 .department(employeeDto.getDepartment())
-                .build();
-
+                .build();*/
+       return  modelMapper.map(employeeDto,Employee.class);
 
     }
 
-
     public EmployeeDto convertToEmployeeDto(Employee employee){
 
-        return  EmployeeDto.builder()
+        /*return  EmployeeDto.builder()
                 .employeeId(employee.getEmployeeId())
                 .employeeName(employee.getEmployeeName())
                 .email(employee.getEmail())
                 .department(employee.getDepartment())
-                .build();
-
-
+                .build();*/
+        return  modelMapper.map(employee,EmployeeDto.class);
     }
 
     public Leave convertToLeave(LeaveDto leaveDto)
@@ -77,13 +80,17 @@ public class Convert {
     }
     public LeaveDto convertToLeaveDto(Leave leave){
 
-        return LeaveDto.builder()
+       /*return LeaveDto.builder()
                 .employeeID(leave.getEmployee().getEmployeeId())
                 .leaveType(leave.getLeaveType().toString())
                 .startDate(leave.getStartDate().toString())
                 .endDate(leave.getEndDate().toString())
                 .reason(leave.getReason())
                 .adjustments(leave.getAdjustments())
-                .build();
+                .build();*/
+        return modelMapper.map(leave,LeaveDto.class);
+
     }
+
+
 }

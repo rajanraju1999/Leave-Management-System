@@ -11,6 +11,7 @@ public class EnumValidator implements ConstraintValidator<EnumValid, CharSequenc
 
     @Override
     public void initialize(EnumValid annotation) {
+
         enumClass = annotation.enumClass();
     }
 

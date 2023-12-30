@@ -1,10 +1,8 @@
 package com.lms.leavemanagementsystem.exception;
 
 import com.lms.leavemanagementsystem.dto.HalfDay;
-import com.lms.leavemanagementsystem.exception.CustomException.EmployeeIdNotFoundException;
-import com.lms.leavemanagementsystem.exception.CustomException.EnumValidationException;
-import com.lms.leavemanagementsystem.exception.CustomException.HalfDayLeaveException;
-import com.lms.leavemanagementsystem.exception.CustomException.LeaveIdNotFoundException;
+import com.lms.leavemanagementsystem.exception.CustomException.*;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +28,7 @@ public class ControllerAdvisor {
 
     @ExceptionHandler(LeaveIdNotFoundException.class)
     public ResponseEntity<String> LeaveIdNotFoundException(LeaveIdNotFoundException leaveIdNotFoundException) {
-        return new ResponseEntity<>("Leave Id is wrong or not found in DB", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(leaveIdNotFoundException.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
 
@@ -58,4 +57,25 @@ public class ControllerAdvisor {
         return new ResponseEntity<>( ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+
+        @ExceptionHandler(HttpMessageNotReadableException.class)
+        public ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+                                                                   HttpHeaders headers, HttpStatus status, WebRequest request) {
+            String errorMessage = "Invalid request body format";
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        }
+
+
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity< String> JwtException(JwtException ex) {
+
+        return new ResponseEntity<>( ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(LeaveApprovedException.class)
+    public ResponseEntity< String> LeaveApprovedException(LeaveApprovedException ex) {
+
+        return new ResponseEntity<>( ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }

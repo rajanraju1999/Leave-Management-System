@@ -22,20 +22,12 @@ public class EmployeeController {
     @Autowired
     EmployeeService employeeService;
 
-    @PostMapping("/create")
-    public ResponseEntity<?> createEmployee(@RequestBody EmployeeDto employeeDto){
 
-
-      employeeService.createEmployee(employeeDto);
-
-      return new ResponseEntity<>("", HttpStatus.OK);
-
-    }
     @PostMapping("/apply/leave")
-    public ResponseEntity<?> applyLeave(@RequestBody @Valid LeaveDto leaveDto)
+    public ResponseEntity<String> applyLeave(@RequestBody @Valid LeaveDto leaveDto)
     {
-        employeeService.applyLeave(leaveDto);
-        return new ResponseEntity<>("", HttpStatus.OK);
+
+        return new ResponseEntity<>(employeeService.applyLeave(leaveDto), HttpStatus.OK);
 
     }
 
@@ -54,7 +46,6 @@ public class EmployeeController {
         employeeService.approveLeave(leaveDtoApprove);
 
         return new ResponseEntity<>("", HttpStatus.OK);
-
 
     }
 

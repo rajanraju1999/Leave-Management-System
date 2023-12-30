@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Table(name = "Employee")
-public class Employee implements UserDetails {
+public class Employee  {
     @Id
     @Column(name = "employeeId")
     private Long employeeId;
@@ -60,6 +60,11 @@ public class Employee implements UserDetails {
             cascade = CascadeType.ALL)
     private List<Leave> leaveList;
 
+    @OneToMany(mappedBy = "roleID",fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL)
+    private  List<Roles> roles;
+
+
     //To add default value
     @PrePersist
     public void prePersist() {
@@ -72,33 +77,5 @@ public class Employee implements UserDetails {
         numberOfLeaves = (numberOfLeaves == null) ? 0: numberOfLeaves;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
 
-    @Override
-    public String getUsername() {
-        return null;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
-    }
 }

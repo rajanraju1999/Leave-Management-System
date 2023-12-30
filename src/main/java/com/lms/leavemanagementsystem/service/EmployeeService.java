@@ -6,19 +6,19 @@ import com.lms.leavemanagementsystem.dto.LeaveDtoApprove;
 import com.lms.leavemanagementsystem.entity.Employee;
 import com.lms.leavemanagementsystem.entity.Leave;
 import com.lms.leavemanagementsystem.exception.CustomException.EmployeeIdNotFoundException;
+import com.lms.leavemanagementsystem.exception.CustomException.LeaveApprovedException;
 import com.lms.leavemanagementsystem.exception.CustomException.LeaveIdNotFoundException;
 import com.lms.leavemanagementsystem.repository.EmployeeRepository;
 import com.lms.leavemanagementsystem.repository.LeaveRepository;
 import com.lms.leavemanagementsystem.util.Convert;
 import com.lms.leavemanagementsystem.util.leavehandler.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.lms.leavemanagementsystem.util.leavehandler.LeaveType.CL;
@@ -62,43 +62,46 @@ public class EmployeeService {
                 .orElse(Collections.emptyList());
     }
 
-    public void applyLeave(LeaveDto leaveDto) {
+    public String applyLeave(LeaveDto leaveDto) {
 
         if(employeeRepository.existsById(leaveDto.getEmployeeID())){
-            leaveRepository.save(convert.convertToLeave(leaveDto));
+            Leave leave =convert.convertToLeave(leaveDto);
+            leaveRepository.save(leave);
+            return leave.getLeavesApplied()+" leaves applied with leave type "+leave.getLeaveType() ;
         }
         else{
             throw new EmployeeIdNotFoundException();
-
         }
     }
 
     public void approveLeave(LeaveDtoApprove leaveDtoApprove) {
 
 
-        Optional<Leave> optionalLeave = Optional.ofNullable(leaveRepository.findByleaveID(leaveDtoApprove.getLeaveID()));
+      Optional<Leave> Leave = Optional.ofNullable(leaveRepository.findByleaveID(leaveDtoApprove.getLeaveID()));
 
-        optionalLeave.ifPresent(leave -> {
-            Double leavesApplied = leave.getLeavesApplied();
-            LeaveType leaveType = leave.getLeaveType();
-            LeaveHandler leaveHandler = lopHandler;
-            switch (leaveType) {
-                case CL -> leaveHandler = casualLeaveHandler;
-                case EL -> leaveHandler = earnedLeaveHandler;
-                case OnDuty -> leaveHandler = onDutyHandler;
-                case Permission -> leaveHandler = permissionHandler;
+
+        Leave.ifPresent(leave -> {
+            if (Objects.equals(leave.getLeaveStatus(), "InProcess")) {
+                Double leavesApplied = leave.getLeavesApplied();
+                LeaveType leaveType = leave.getLeaveType();
+                LeaveHandler leaveHandler = lopHandler;
+                switch (leaveType) {
+                    case CL -> leaveHandler = casualLeaveHandler;
+                    case EL -> leaveHandler = earnedLeaveHandler;
+                    case OnDuty -> leaveHandler = onDutyHandler;
+                    case Permission -> leaveHandler = permissionHandler;
+                }
+                leaveHandler.deductLeave(leave);
+
+                leave.setLeavesApplied(leavesApplied);
+                leave.setLeaveStatus("Approved");
+                leaveRepository.save(leave);
+            } else {
+                throw new LeaveApprovedException("Leave with leave Id " + leave.getLeaveID() + " is already approved");
             }
-            leaveHandler.deductLeave(leave);
-
-            leave.setLeavesApplied(leavesApplied);
-            leave.setLeaveStatus("Approved");
-            leaveRepository.save(leave);
         });
 
-// If needed, you can handle the case where the leave is not found
-        if (optionalLeave.isEmpty()) {
-           throw new LeaveIdNotFoundException();
-        }
+        Leave.orElseThrow(() -> new LeaveIdNotFoundException("Leave with ID " + leaveDtoApprove.getLeaveID() + " not found"));
 
     }
 
