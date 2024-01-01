@@ -9,6 +9,9 @@ import com.lms.leavemanagementsystem.repository.EmployeeRepository;
 import com.lms.leavemanagementsystem.util.leavehandler.LeaveType;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -53,7 +56,11 @@ public class Convert {
 
     public Leave convertToLeave(LeaveDto leaveDto)
     {
-        Optional<Employee> employeeOptional = employeeRepository.findById(leaveDto.getEmployeeID());
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Optional<Employee> employeeOptional = Optional.ofNullable(employeeRepository.findByEmail(userDetails.getUsername()));
+
         LocalDate currentDate = LocalDate.now();
 
         LocalDate startDate = LocalDate.parse(leaveDto.getStartDate());
@@ -68,6 +75,7 @@ public class Convert {
         System.out.println(leavesAppliedDays);
         return Leave.builder()
                 .employee(employeeOptional.orElse(null))
+                .approverEmail(leaveDto.getApproverEmail())
                 .leaveType(LeaveType.valueOf(leaveDto.getLeaveType()))
                 .startDate(LocalDate.parse(leaveDto.getStartDate()))
                 .endDate(LocalDate.parse(leaveDto.getEndDate()))
@@ -80,15 +88,15 @@ public class Convert {
     }
     public LeaveDto convertToLeaveDto(Leave leave){
 
-       /*return LeaveDto.builder()
+       return LeaveDto.builder()
                 .employeeID(leave.getEmployee().getEmployeeId())
                 .leaveType(leave.getLeaveType().toString())
                 .startDate(leave.getStartDate().toString())
                 .endDate(leave.getEndDate().toString())
                 .reason(leave.getReason())
                 .adjustments(leave.getAdjustments())
-                .build();*/
-        return modelMapper.map(leave,LeaveDto.class);
+                .build();
+        //return modelMapper.map(leave,LeaveDto.class);
 
     }
 

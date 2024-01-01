@@ -5,6 +5,7 @@ import com.lms.leavemanagementsystem.dto.LoginDto;
 import com.lms.leavemanagementsystem.dto.RoleDto;
 import com.lms.leavemanagementsystem.entity.Employee;
 import com.lms.leavemanagementsystem.entity.Roles;
+import com.lms.leavemanagementsystem.exception.CustomException.UsernamePasswordException;
 import com.lms.leavemanagementsystem.repository.EmployeeRepository;
 import com.lms.leavemanagementsystem.repository.RoleRepository;
 import com.lms.leavemanagementsystem.service.EmployeeService;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,7 +85,6 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginDto loginDto){
 
-
         try {
 
             Authentication authentication = authenticationManager.authenticate(
@@ -96,14 +98,10 @@ public class AuthController {
             return new ResponseEntity<>(token, HttpStatus.OK);
         }
         catch(Exception e) {
-            e.printStackTrace(); // or log the exception detai
-            return new ResponseEntity<>("wrong cridentionals", HttpStatus.BAD_REQUEST);
+          e.printStackTrace(); // or log the exception detai
+            throw new UsernamePasswordException("Bad Credentials");
         }
     }
-
-
-
-
 
 
 }

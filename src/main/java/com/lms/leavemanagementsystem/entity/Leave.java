@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Data
@@ -23,8 +22,11 @@ public class Leave {
     private String leaveID;
 
     @ManyToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name="employeeId", nullable=false)
+    @JoinColumn(name="employeeId", nullable=false,referencedColumnName = "employeeId")
     private Employee employee;
+
+    @Column(name = "approverEmail")
+    private String approverEmail;
 
     @Column(name = "leaveType")
     private LeaveType leaveType;

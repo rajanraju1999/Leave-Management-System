@@ -6,6 +6,7 @@ import com.lms.leavemanagementsystem.entity.Leave;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 @Repository
@@ -13,4 +14,6 @@ public interface LeaveRepository extends JpaRepository<Leave,String> {
     List<Leave> findByEmployee(Employee employee);
 
     Leave findByleaveID(String leaveID);
+
+    List<Leave> findByApproverEmail(String email);
 }

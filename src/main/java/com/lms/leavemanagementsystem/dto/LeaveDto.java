@@ -16,8 +16,11 @@ import lombok.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class LeaveDto {
 
-    @NotNull(message = "Employee ID cannot be null")
+   // @NotNull(message = "Employee ID cannot be null")
     private Long employeeID;
+
+    @NotNull(message = "Employee ID cannot be null")
+    private String approverEmail;
 
     @NotBlank(message = "cant not be blank")
     @EnumValid(enumClass = LeaveType.class, message = "Invalid LeaveType value : ")
