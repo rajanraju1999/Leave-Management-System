@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import javax.management.relation.RoleNotFoundException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -90,20 +91,38 @@ public class EmployeeService {
     }
 
 
+    private boolean hasOverlap(List<Leave> existingLeaves, LocalDate newLeaveStartDate, LocalDate newLeaveEndDate) {
+        return existingLeaves.stream().anyMatch(existingLeave ->
+                (newLeaveStartDate.isEqual(existingLeave.getStartDate()) || newLeaveStartDate.isAfter(existingLeave.getStartDate())) &&
+                        (newLeaveStartDate.isEqual(existingLeave.getEndDate()) || newLeaveStartDate.isBefore(existingLeave.getEndDate())) ||
+                        (newLeaveEndDate.isEqual(existingLeave.getStartDate()) || newLeaveEndDate.isAfter(existingLeave.getStartDate())) &&
+                                (newLeaveEndDate.isEqual(existingLeave.getEndDate()) || newLeaveEndDate.isBefore(existingLeave.getEndDate())) ||
+                        (newLeaveStartDate.isBefore(existingLeave.getStartDate()) && newLeaveEndDate.isAfter(existingLeave.getEndDate()))
+        );
+    }
 
 
     public String applyLeave(LeaveDto leaveDto) {
+
         Leave leave = convert.convertToLeave(leaveDto);
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+       UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-        if (!Objects.equals(leave.getApproverEmail(),userDetails.getUsername())) {
+       Employee employee = employeeRepository.findByEmail(userDetails.getUsername());
+       List<Leave> existingLeaves = employee.getLeaveList();
+
+       LocalDate newLeaveStartDate = leave.getStartDate();
+       LocalDate newLeaveEndDate = leave.getEndDate();
+
+        if (hasOverlap(existingLeaves, newLeaveStartDate, newLeaveEndDate)) {
+            throw new LeaveApprovedException("Leaves dates overlapping with previous leaves");
+        }
+        else if (!Objects.equals(leave.getApproverEmail(), userDetails.getUsername())) {
             leaveRepository.save(leave);
             return leave.getLeavesApplied() + " leaves applied with leave type " + leave.getLeaveType();
-        }else
-        {
-           throw new LeaveApprovedException("you can't be your own approver");
+        } else {
+            throw new LeaveApprovedException("You can't be your own approver");
         }
 
     }

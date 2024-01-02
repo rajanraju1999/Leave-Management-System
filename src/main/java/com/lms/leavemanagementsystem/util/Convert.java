@@ -88,15 +88,16 @@ public class Convert {
     }
     public LeaveDto convertToLeaveDto(Leave leave){
 
-       return LeaveDto.builder()
+      /* return LeaveDto.builder()
                 .employeeID(leave.getEmployee().getEmployeeId())
                 .leaveType(leave.getLeaveType().toString())
                 .startDate(leave.getStartDate().toString())
                 .endDate(leave.getEndDate().toString())
                 .reason(leave.getReason())
                 .adjustments(leave.getAdjustments())
-                .build();
-        //return modelMapper.map(leave,LeaveDto.class);
+                .LeaveStatus(leave.getLeaveStatus())
+                .build();*/
+        return modelMapper.map(leave,LeaveDto.class);
 
     }
 

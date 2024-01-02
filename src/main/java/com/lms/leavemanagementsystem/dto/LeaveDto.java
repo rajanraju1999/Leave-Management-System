@@ -16,7 +16,6 @@ import lombok.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class LeaveDto {
 
-   // @NotNull(message = "Employee ID cannot be null")
     private Long employeeID;
 
     @NotNull(message = "Employee ID cannot be null")
@@ -43,5 +42,7 @@ public class LeaveDto {
     @NotBlank(message = "cant not be blank")
     @EnumValid(enumClass = HalfDay.class, message = "Invalid HalfDay value : ")
     private String halfDay;
+
+    private String leaveStatus;
 
 }
